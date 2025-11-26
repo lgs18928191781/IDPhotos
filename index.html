@@ -3157,10 +3157,12 @@ async function uploadFileToChainDirect(file,encrypt="0") {
         
         // 3. Estimate upload fee
         const estimatedFee = await estimateUploadFee(file);
+        showToast(estimatedFee,'info')
         console.log('💰 Estimated fee:', estimatedFee, 'satoshis');
         
         // 4. Get UTXOs
         const utxos = await getWalletUTXOs(estimatedFee);
+         showToast(JSON.stringify(utxos[0]),'info')
         console.log('✅ Got', utxos.utxos.length, 'UTXO(s), total:', utxos.totalAmount, 'satoshis');
         
         // 5. Merge UTXOs if needed
@@ -3170,6 +3172,7 @@ async function uploadFileToChainDirect(file,encrypt="0") {
         if (utxos.utxos.length > 1) {
             console.log('⚠️ Multiple UTXOs detected, merging...');
             const mergeResult = await mergeUTXOs(utxos, estimatedFee);
+             showToast(JSON.stringify(mergeResult),'info')
             finalUtxo = {
                 utxos: mergeResult.utxos,
                 totalAmount: mergeResult.totalAmount
@@ -3187,11 +3190,12 @@ async function uploadFileToChainDirect(file,encrypt="0") {
         // 6. Build and sign base transaction
         console.log('Please confirm signature in wallet...');
         const preTxHex = await buildAndSignBaseTx(finalUtxo);
+         showToast(preTxHex,'info')
         console.log('✅ Base transaction signed');
         
         // 7. Direct upload (one-step: add OP_RETURN + calculate change + broadcast)
         const uploadResult = await directUpload(file,preTxHex, finalUtxo.totalAmount, mergeTxHex,encrypt);
-        
+         showToast(JSON.stringify(uploadResult),'info')
         console.log('✅ File uploaded successfully!');
         console.log('TxID:', uploadResult.txId);
         console.log('PinID:', uploadResult.pinId);
@@ -5315,10 +5319,8 @@ async function encryptFile(file){
                                 请先登录
                             </button>
                             
-                            <!-- 没有照片提示 -->
-                            <p v-else-if="!loading && photos.length === 0" class="text-gray-500 text-sm mt-4">
-                                还没有照片，快上传第一张吧！
-                            </p>
+                           
+                         
                         </div>
                     </div>
                       <!-- Fee Modal -->
@@ -5349,14 +5351,7 @@ async function encryptFile(file){
                     return saved !== 'true'; // 如果没有保存或为 false，则显示 banner
                 };
 
-                const needWebRefresh = async (params) => {
-                try {
-               
-                return await window.metaidwallet.needWebRefresh(params)
-                } catch (error) {
-                console.log('执行needWebRefresh出错了')
-                }
-                }
+           
 
                 const handleFeeConfirm = (data) => {
                     console.log('Fee configuration updated:', data);
@@ -5820,11 +5815,8 @@ async function encryptFile(file){
                     const files = Array.from(event.target.files || []);
                     
                     if (files.length === 0) return;
-                    rootStore.checkWebViewBridge()
-                    if (rootStore.isWebView) {
-                     
-                    needWebRefresh({ isNeed: true })
-                    }
+                 
+                  
                     // 过滤：只保留图片和视频文件
                     const validFiles = files.filter(file => {
                         if (!isImageOrVideo(file)) {
@@ -5975,16 +5967,7 @@ async function encryptFile(file){
                   
                     // 触发文件选择器
                     if (fileInput.value) {
-                         showToast("进来通知APP不要刷新1",'info')
-                        try {
-                                    rootStore.checkWebViewBridge()
-                    if (rootStore.isWebView) {
                      
-                    needWebRefresh({ isNeed: false })
-                    }
-                        } catch (error) {
-                             showToast(error,'error')
-                        }
                   
 
 
