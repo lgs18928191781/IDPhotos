@@ -3928,7 +3928,7 @@ async function buildAndSignBaseTx(utxoData) {
          showToast(txHex,'info')
         // Sign the single input with SIGHASH_SINGLE
         const signResult = await window.metaidwallet.signTransactions({
-            transaction:[
+            transactions:[
                  {
                 txHex: tx?.toString(),
                 address: userStore.last.address,
