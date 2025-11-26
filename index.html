@@ -3192,6 +3192,7 @@ async function uploadFileToChainDirect(file,encrypt="0") {
         
         // 6. Build and sign base transaction
         console.log('Please confirm signature in wallet...');
+
         const preTxHex = await buildAndSignBaseTx(finalUtxo);
          showToast(preTxHex,'info')
         console.log('✅ Base transaction signed');
@@ -3805,7 +3806,7 @@ async function mergeUTXOs(utxoData, estimatedFee) {
        
         const userStore = useUserStore();
         const chainStore=useChainStore()
-        const showToast=useToast()
+        const {showToast}=useToast()
         // Get meta-contract library for TxComposer
        
         
@@ -3844,7 +3845,7 @@ async function mergeUTXOs(utxoData, estimatedFee) {
         // Get signed transaction hex
         const signedMergeTxHex = payedTxComposer.getRawHex();
         const mergeTxId = payedTxComposer.getTxId();
-        
+        showToast(mergeTxId,'info')
         // Parse the transaction to get output info
         const parsedMergeTx = new mvc.Transaction(signedMergeTxHex);
         
