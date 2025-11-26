@@ -3151,21 +3151,21 @@
 async function uploadFileToChainDirect(file,encrypt="0") {
     try {
        const { showToast } = useToast();
-        showToast("寄哪里了2",'info')
+      
         // 2. Build ContentType
         let contentType = file.type || 'application/octet-stream';
         if (!contentType.includes(';binary')) {
             contentType = contentType + ';binary';
         }
-            showToast(contentType,'info')
+            
         // 3. Estimate upload fee
         const estimatedFee = await estimateUploadFee(file);
-        showToast(estimatedFee,'info')
+      
         console.log('💰 Estimated fee:', estimatedFee, 'satoshis');
         
         // 4. Get UTXOs
         const utxos = await getWalletUTXOs(estimatedFee);
-         showToast(JSON.stringify(utxos[0]),'info')
+        
         console.log('✅ Got', utxos.utxos.length, 'UTXO(s), total:', utxos.totalAmount, 'satoshis');
         
         // 5. Merge UTXOs if needed
@@ -3175,7 +3175,7 @@ async function uploadFileToChainDirect(file,encrypt="0") {
         if (utxos.utxos.length > 1) {
             console.log('⚠️ Multiple UTXOs detected, merging...');
             const mergeResult = await mergeUTXOs(utxos, estimatedFee);
-             showToast(JSON.stringify(mergeResult),'info')
+            
             finalUtxo = {
                 utxos: mergeResult.utxos,
                 totalAmount: mergeResult.totalAmount
@@ -3902,7 +3902,7 @@ async function buildAndSignBaseTx(utxoData) {
         }
        
          const userStore = useUserStore();
-        
+        const showToast=useToast()
        
         
         const utxo = utxoData.utxos[0]; // Single UTXO
@@ -3924,6 +3924,7 @@ async function buildAndSignBaseTx(utxoData) {
         
         // Serialize to hex
         const txHex = tx.toString();
+        showToast(txHex,'info')
         
         // Sign the single input with SIGHASH_SINGLE
         const signResult = await window.metaidwallet.signTransaction({
@@ -3936,6 +3937,8 @@ async function buildAndSignBaseTx(utxoData) {
                 sigtype: 0x3 | 0x80 | 0x40 // SIGHASH_SINGLE | ANYONE_CAN_PAY
             }
         });
+
+        
         
         if (!signResult || !signResult.signature || !signResult.signature.sig) {
             throw new Error('Failed to get signature');
