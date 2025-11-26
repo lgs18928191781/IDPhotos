@@ -5963,13 +5963,15 @@ async function encryptFile(file){
                 
                 // 打开文件选择器
                 const handleUpload = () => {
+                        showToast(info,"进来通知APP不要刷新")
                     if (!credentialsStore.get) {
                         handleLogin();
                         return;
                     }
                       rootStore.checkWebViewBridge()
+                         showToast(info,"进来通知APP不要刷新")
                     if (rootStore.isWebView) {
-                        showToast(info,"进来通知APP不要刷新")
+                     
                     needWebRefresh({ isNeed: false })
                     }
                     // 触发文件选择器
