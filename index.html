@@ -6707,6 +6707,7 @@ async function encryptFile(file){
 
                 // App登录成功处理
                 const appLoginSuccessHandler = async (data) => {
+                    showToast(info,"进来了APP登录逻辑")
                     try {
                         if (!userStore.isAuthorized) {
                             await connectMetalet();
