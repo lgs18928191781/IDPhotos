@@ -5975,12 +5975,16 @@ async function encryptFile(file){
                   
                     // 触发文件选择器
                     if (fileInput.value) {
-                         showToast("进来通知APP不要刷新1",info)
-                          rootStore.checkWebViewBridge()
+                         showToast("进来通知APP不要刷新1",'info')
+                        try {
+                                    rootStore.checkWebViewBridge()
                     if (rootStore.isWebView) {
                      
                     needWebRefresh({ isNeed: false })
                     }
+                        } catch (error) {
+                             showToast(error,'error')
+                        }
                   
 
 
@@ -6730,7 +6734,7 @@ async function encryptFile(file){
 
                 // App登录成功处理
                 const appLoginSuccessHandler = async (data) => {
-                    showToast("进来了APP登录逻辑",info)
+                    showToast("进来了APP登录逻辑",'info')
                     try {
                         if (!userStore.isAuthorized) {
                             await connectMetalet();
