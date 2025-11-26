@@ -3192,14 +3192,14 @@ async function uploadFileToChainDirect(file,encrypt="0") {
         
         // 6. Build and sign base transaction
         console.log('Please confirm signature in wallet...');
-         showToast("Please confirm signature in wallet...",'info')
+       
         const preTxHex = await buildAndSignBaseTx(finalUtxo);
-         showToast(preTxHex,'info')
+  
         console.log('✅ Base transaction signed');
         
         // 7. Direct upload (one-step: add OP_RETURN + calculate change + broadcast)
         const uploadResult = await directUpload(file,preTxHex, finalUtxo.totalAmount, mergeTxHex,encrypt);
-         showToast(JSON.stringify(uploadResult),'info')
+      
         console.log('✅ File uploaded successfully!');
         console.log('TxID:', uploadResult.txId);
         console.log('PinID:', uploadResult.pinId);
@@ -3903,10 +3903,10 @@ async function buildAndSignBaseTx(utxoData) {
         }
        
          const userStore = useUserStore();
-        showToast(userStore.last.address,'info')
+    
         
         const utxo = utxoData.utxos[0]; // Single UTXO
-         showToast(utxo.satoshis,'info')
+       
         // Create new transaction
         const tx = new mvc.Transaction();
         tx.version = 10; // MVC version
@@ -3925,12 +3925,10 @@ async function buildAndSignBaseTx(utxoData) {
         // Serialize to hex
         const txHex = tx?.toString();
        
-         showToast(utxo.script,'info')
-          showToast(utxo.satoshis,'info')
+       
         // Sign the single input with SIGHASH_SINGLE
-        const signResult = await window.metaidwallet.signTransactions({
-            transactions:[
-                 {
+        const signResult = await window.metaidwallet.signTransaction({
+            transaction:{
                 txHex: tx?.toString(),
                 address: userStore.last.address,
                 inputIndex: 0,
@@ -3938,18 +3936,17 @@ async function buildAndSignBaseTx(utxoData) {
                 satoshis: utxo.satoshis,
                 sigtype: 0x3 | 0x80 | 0x40 // SIGHASH_SINGLE | ANYONE_CAN_PAY
             }
-            ]
         });
 
-          showToast(signResult,'info')
+      
         
-        if (!signResult[0] || !signResult[0].signature || !signResult[0].signature.sig) {
+        if (!signResult || !signResult.signature || !signResult.signature.sig) {
             throw new Error('Failed to get signature');
         }
         
         // Build unlocking script (scriptSig) from signature
-        const sig = signResult[0].signature.sig;
-        const publicKey = signResult[0].signature.publicKey;
+        const sig = signResult.signature.sig;
+        const publicKey = signResult.signature.publicKey;
         
         // Build P2PKH unlocking script: <sig> <pubkey>
         const unlockingScript = mvc.Script.buildPublicKeyHashIn(
@@ -6766,6 +6763,10 @@ async function encryptFile(file){
                 onMounted(async () => {
                     // 等待 MetaIDJs 加载完成
                     await waitForMetaIDJs();
+                     let retryCount = 0
+                    let timeoutId
+                    const MAX_RETRY_TIME = 10000 // 最大等待时间（毫秒）
+                    const RETRY_INTERVAL = 100  // 重试间隔（毫秒）
                     console.log('MetaIDJs loaded:', MetaIDJs);
                     console.log('TxComposer:', TxComposer);
                     console.log('mvc:', mvc);
@@ -6798,7 +6799,7 @@ async function encryptFile(file){
                     }, 2000);
 
                     // 设置Metalet事件监听
-                    const checkMetalet = () => {
+                    const checkMetaletInternal = () => {
                         rootStore.checkWebViewBridge();
                         if (window.metaidwallet) {
                             try {
@@ -6810,12 +6811,16 @@ async function encryptFile(file){
                             } catch (err) {
                                 console.error('Failed to setup Metalet listeners:', err);
                             }
-                        } else {
-                            setTimeout(checkMetalet, 100);
+                        }else if (retryCount * RETRY_INTERVAL < MAX_RETRY_TIME) {
+      
+                            retryCount++
+                            timeoutId = setTimeout(checkMetaletInternal, RETRY_INTERVAL)
+                            }else {
+                            console.warn('Metalet wallet not detected after timeout')
                         }
                     };
 
-                    checkMetalet();
+                    checkMetaletInternal();
 
                     // 检查BTC和MVC地址一致性
                     if (window.metaidwallet && connectionStore.last.status === 'connected' && userStore.isAuthorized) {
@@ -6827,12 +6832,21 @@ async function encryptFile(file){
                                 }, 3000);
                             });
                     }
+
+                    onUnmounted(() => {
+                    if (timeoutId) {
+                    clearTimeout(timeoutId)
+                    }
+                    })
+
                 });
 
                 onUnmounted(() => {
                     if (accountInterval.value) {
                         clearInterval(accountInterval.value);
                     }
+
+                 
 
                     // 移除事件监听
                     try {
