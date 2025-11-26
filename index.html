@@ -3154,7 +3154,7 @@ async function uploadFileToChainDirect(file,encrypt="0") {
         if (!contentType.includes(';binary')) {
             contentType = contentType + ';binary';
         }
-        
+            showToast(contentType,'info')
         // 3. Estimate upload fee
         const estimatedFee = await estimateUploadFee(file);
         showToast(estimatedFee,'info')
