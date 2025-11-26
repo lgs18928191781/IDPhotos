@@ -4897,7 +4897,7 @@ async function encryptFile(file){
                 // 上传文件
                 const uploadFiles = async () => {
                     if (files.value.length === 0) return;
-
+                 
                     try {
                         isUploading.value = true;
                         const results = [];
@@ -5879,9 +5879,9 @@ async function encryptFile(file){
                 // 确认上传
                 const confirmUpload = async () => {
                     if (selectedFiles.value.length === 0 || uploading.value) return;
-                    
+                       showToast(selectedFiles.value.length,'info')
                     // 检查是否有加密文件，暂时不允许上传加密文件
-                    const hasEncryptedFiles = selectedFiles.value.some(item => item.isPrivate === "1");
+                    const hasEncryptedFiles = selectedFiles.value.some(item => item.isPrivate == "1");
                     if (hasEncryptedFiles) {
                         showToast('暂不支持上传加密照片，请将照片设置为公开后再上传', 'warning');
                         return;
