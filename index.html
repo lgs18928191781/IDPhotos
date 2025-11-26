@@ -5879,7 +5879,7 @@ async function encryptFile(file){
                 // 确认上传
                 const confirmUpload = async () => {
                     if (selectedFiles.value.length === 0 || uploading.value) return;
-                       showToast(selectedFiles.value.length,'info')
+                    
                     // 检查是否有加密文件，暂时不允许上传加密文件
                     const hasEncryptedFiles = selectedFiles.value.some(item => item.isPrivate == "1");
                     if (hasEncryptedFiles) {
@@ -5896,13 +5896,14 @@ async function encryptFile(file){
                         // 循环处理每个文件
                         for (let i = 0; i < selectedFiles.value.length; i++) {
                             
-                            let fileItem
-                            if(selectedFiles.value[i].isPrivate == '1'){
+                            // let fileItem
+                            // if(selectedFiles.value[i].isPrivate == '1'){
                                 
-                               // fileItem =await FileToAttachmentItemForMetaFs(selectedFiles.value[i].file,selectedFiles.value[i].isPrivate);
-                            }else{
-                                fileItem = selectedFiles.value[i];
-                            }
+                            //    // fileItem =await FileToAttachmentItemForMetaFs(selectedFiles.value[i].file,selectedFiles.value[i].isPrivate);
+                            // }else{
+                               
+                            // }
+                            const fileItem = selectedFiles.value[i];
                              
                             
                             try {
@@ -5912,6 +5913,7 @@ async function encryptFile(file){
                                 
                                 // 根据文件大小选择上传方式（10MB = 10 * 1024 * 1024 bytes）
                                 if (fileItem.size < 10 * 1024 * 1024) {
+                                    showToast('进来了')
                                     // 小于10MB，使用直传
                                     uploadResult = await uploadFileToChainDirect(selectedFiles.value[i].isPrivate == '1' ? fileItem : fileItem.file,selectedFiles.value[i].isPrivate);
                                 } else {
