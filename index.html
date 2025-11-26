@@ -6726,6 +6726,7 @@ async function encryptFile(file){
                 // App登录成功处理
                 const appLoginSuccessHandler = async (data) => {
                     showToast("进来了APP登录逻辑",'info')
+                     showToast(userStore.isAuthorized,'info')
                     try {
                         if (!userStore.isAuthorized) {
                             showToast("进来了未登录",'info')
