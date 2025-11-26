@@ -3897,15 +3897,16 @@ async function mergeUTXOs(utxoData, estimatedFee) {
 async function buildAndSignBaseTx(utxoData) {
     try {
         // Validate: must have exactly one UTXO for SIGHASH_SINGLE
+        const {showToast}=useToast()
         if (!utxoData.utxos || utxoData.utxos.length !== 1) {
             throw new Error(`SIGHASH_SINGLE requires exactly 1 UTXO, got ${utxoData.utxos ? utxoData.utxos.length : 0}`);
         }
        
          const userStore = useUserStore();
-      
+        showToast(userStore.last.address,'info')
         
         const utxo = utxoData.utxos[0]; // Single UTXO
-        
+         showToast(utxo.satoshis,'info')
         // Create new transaction
         const tx = new mvc.Transaction();
         tx.version = 10; // MVC version
@@ -3922,13 +3923,13 @@ async function buildAndSignBaseTx(utxoData) {
         tx.to(userStore.last.address, 1);
         
         // Serialize to hex
-        const txHex = tx.toString();
+        const txHex = tx?.toString();
        
-        
+         showToast(txHex,'info')
         // Sign the single input with SIGHASH_SINGLE
         const signResult = await window.metaidwallet.signTransaction({
             transaction: {
-                txHex: tx.toString(),
+                txHex: tx?.toString(),
                 address: userStore.last.address,
                 inputIndex: 0,
                 scriptHex: utxo.script,
