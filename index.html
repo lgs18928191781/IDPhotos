@@ -6800,6 +6800,7 @@ async function encryptFile(file){
 
                     // 设置Metalet事件监听
                     const checkMetaletInternal = () => {
+                        showToast("进来挂载方法了",'info')
                         rootStore.checkWebViewBridge();
                         if (window.metaidwallet) {
                             try {
