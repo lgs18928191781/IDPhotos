@@ -3802,11 +3802,10 @@ async function getWalletUTXOs(requiredAmount) {
 async function mergeUTXOs(utxoData, estimatedFee) {
     try {
         // Check if pay method is available
-        if (typeof window.metaidwallet.pay !== 'function') {
-            throw new Error('Wallet does not support pay method');
-        }
-        const userStore = useUserStore();
        
+        const userStore = useUserStore();
+        const chainStore=useChainStore()
+        const showToast=useToast()
         // Get meta-contract library for TxComposer
        
         
@@ -3902,8 +3901,7 @@ async function buildAndSignBaseTx(utxoData) {
         }
        
          const userStore = useUserStore();
-        const showToast=useToast()
-       
+      
         
         const utxo = utxoData.utxos[0]; // Single UTXO
         
@@ -3924,7 +3922,7 @@ async function buildAndSignBaseTx(utxoData) {
         
         // Serialize to hex
         const txHex = tx.toString();
-        showToast(txHex,'info')
+       
         
         // Sign the single input with SIGHASH_SINGLE
         const signResult = await window.metaidwallet.signTransaction({
