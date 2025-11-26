@@ -5339,7 +5339,7 @@ async function encryptFile(file){
                 const userStore = useUserStore();
                 const chainStore = useChainStore();
                 const showFeeModal = ref(false);
-              
+                const rootStore=useRootStore()
                 // Tab 状态管理
                 const activeTab = Vue.ref('photo'); // 'photo' 或 'album'
                 
@@ -5348,6 +5348,15 @@ async function encryptFile(file){
                     const saved = localStorage.getItem('homeBannerClosed');
                     return saved !== 'true'; // 如果没有保存或为 false，则显示 banner
                 };
+
+                const needWebRefresh = async (params) => {
+                try {
+               
+                return await window.metaidwallet.needWebRefresh(params)
+                } catch (error) {
+                console.log('执行needWebRefresh出错了')
+                }
+                }
 
                 const handleFeeConfirm = (data) => {
                     console.log('Fee configuration updated:', data);
@@ -5958,9 +5967,17 @@ async function encryptFile(file){
                         handleLogin();
                         return;
                     }
-                    
+                      rootStore.checkWebViewBridge()
+                    if (rootStore.isWebView) {
+                        showToast(info,"进来通知APP不要刷新")
+                    needWebRefresh({ isNeed: false })
+                    }
                     // 触发文件选择器
                     if (fileInput.value) {
+
+                  
+
+
                         fileInput.value.click();
                     }
                 };
