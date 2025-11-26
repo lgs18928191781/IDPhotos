@@ -3925,7 +3925,8 @@ async function buildAndSignBaseTx(utxoData) {
         // Serialize to hex
         const txHex = tx?.toString();
        
-         showToast(txHex,'info')
+         showToast(utxo.script,'info')
+          showToast(utxo.satoshis,'info')
         // Sign the single input with SIGHASH_SINGLE
         const signResult = await window.metaidwallet.signTransactions({
             transactions:[
@@ -3940,7 +3941,7 @@ async function buildAndSignBaseTx(utxoData) {
             ]
         });
 
-        
+          showToast(signResult,'info')
         
         if (!signResult[0] || !signResult[0].signature || !signResult[0].signature.sig) {
             throw new Error('Failed to get signature');
