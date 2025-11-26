@@ -3192,7 +3192,7 @@ async function uploadFileToChainDirect(file,encrypt="0") {
         
         // 6. Build and sign base transaction
         console.log('Please confirm signature in wallet...');
-
+         showToast("Please confirm signature in wallet...",'info')
         const preTxHex = await buildAndSignBaseTx(finalUtxo);
          showToast(preTxHex,'info')
         console.log('✅ Base transaction signed');
