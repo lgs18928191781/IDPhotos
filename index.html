@@ -5820,7 +5820,11 @@ async function encryptFile(file){
                     const files = Array.from(event.target.files || []);
                     
                     if (files.length === 0) return;
-                    
+                    rootStore.checkWebViewBridge()
+                    if (rootStore.isWebView) {
+                     
+                    needWebRefresh({ isNeed: true })
+                    }
                     // 过滤：只保留图片和视频文件
                     const validFiles = files.filter(file => {
                         if (!isImageOrVideo(file)) {
@@ -5968,15 +5972,15 @@ async function encryptFile(file){
                         handleLogin();
                         return;
                     }
-                    //   rootStore.checkWebViewBridge()
-                    //      showToast("进来通知APP不要刷新2",info)
-                    // if (rootStore.isWebView) {
-                     
-                    // needWebRefresh({ isNeed: false })
-                    // }
+                  
                     // 触发文件选择器
                     if (fileInput.value) {
-
+                         showToast("进来通知APP不要刷新1",info)
+                          rootStore.checkWebViewBridge()
+                    if (rootStore.isWebView) {
+                     
+                    needWebRefresh({ isNeed: false })
+                    }
                   
 
 
