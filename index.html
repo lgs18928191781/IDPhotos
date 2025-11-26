@@ -5899,7 +5899,7 @@ async function encryptFile(file){
                             let fileItem
                             if(selectedFiles.value[i].isPrivate == '1'){
                                 
-                                fileItem =await FileToAttachmentItemForMetaFs(selectedFiles.value[i].file,selectedFiles.value[i].isPrivate);
+                               // fileItem =await FileToAttachmentItemForMetaFs(selectedFiles.value[i].file,selectedFiles.value[i].isPrivate);
                             }else{
                                 fileItem = selectedFiles.value[i];
                             }
