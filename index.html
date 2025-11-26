@@ -3927,8 +3927,9 @@ async function buildAndSignBaseTx(utxoData) {
        
          showToast(txHex,'info')
         // Sign the single input with SIGHASH_SINGLE
-        const signResult = await window.metaidwallet.signTransaction({
-            transaction: {
+        const signResult = await window.metaidwallet.signTransactions({
+            transaction:[
+                 {
                 txHex: tx?.toString(),
                 address: userStore.last.address,
                 inputIndex: 0,
@@ -3936,17 +3937,18 @@ async function buildAndSignBaseTx(utxoData) {
                 satoshis: utxo.satoshis,
                 sigtype: 0x3 | 0x80 | 0x40 // SIGHASH_SINGLE | ANYONE_CAN_PAY
             }
+            ]
         });
 
         
         
-        if (!signResult || !signResult.signature || !signResult.signature.sig) {
+        if (!signResult[0] || !signResult[0].signature || !signResult[0].signature.sig) {
             throw new Error('Failed to get signature');
         }
         
         // Build unlocking script (scriptSig) from signature
-        const sig = signResult.signature.sig;
-        const publicKey = signResult.signature.publicKey;
+        const sig = signResult[0].signature.sig;
+        const publicKey = signResult[0].signature.publicKey;
         
         // Build P2PKH unlocking script: <sig> <pubkey>
         const unlockingScript = mvc.Script.buildPublicKeyHashIn(
