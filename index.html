@@ -3151,7 +3151,7 @@
 async function uploadFileToChainDirect(file,encrypt="0") {
     try {
       
-        showToast("寄哪里了2")
+        showToast("寄哪里了2",'info')
         // 2. Build ContentType
         let contentType = file.type || 'application/octet-stream';
         if (!contentType.includes(';binary')) {
