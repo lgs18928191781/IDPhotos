@@ -3148,7 +3148,7 @@
 async function uploadFileToChainDirect(file,encrypt="0") {
     try {
       
-
+        showToast("寄哪里了2")
         // 2. Build ContentType
         let contentType = file.type || 'application/octet-stream';
         if (!contentType.includes(';binary')) {
@@ -5913,7 +5913,7 @@ async function encryptFile(file){
                                 
                                 // 根据文件大小选择上传方式（10MB = 10 * 1024 * 1024 bytes）
                                 if (fileItem.size < 10 * 1024 * 1024) {
-                                    showToast('进来了')
+                                   
                                     // 小于10MB，使用直传
                                     uploadResult = await uploadFileToChainDirect(selectedFiles.value[i].isPrivate == '1' ? fileItem : fileItem.file,selectedFiles.value[i].isPrivate);
                                 } else {
