@@ -6728,6 +6728,7 @@ async function encryptFile(file){
                     showToast("进来了APP登录逻辑",'info')
                     try {
                         if (!userStore.isAuthorized) {
+                            showToast("进来了未登录",'info')
                             await connectMetalet();
                         }
                     } catch (error) {
